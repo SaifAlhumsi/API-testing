@@ -1,0 +1,218 @@
+{
+	"info": {
+		"_postman_id": "f179d1db-fa67-4d80-9067-309c4f4237e5",
+		"name": "API test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47020755",
+		"_collection_link": "https://spaceflight-cosmonaut-683346-3681097.postman.co/workspace/Saif-Alhumsi's-Workspace~3618e59f-40a2-4de1-81ff-19e304429cfc/collection/47020755-f179d1db-fa67-4d80-9067-309c4f4237e5?action=share&source=collection_link&creator=47020755"
+	},
+	"item": [
+		{
+			"name": "Add request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let color = pm.variables.replaceIn('{{$randomColor}}')\r",
+							"let month = pm.variables.replaceIn('{{$randomMonth}}')\r",
+							"let isbn = pm.variables.replaceIn('{{$randomInt}}')*867\r",
+							"let aisle = pm.variables.replaceIn('{{$randomInt}}')*598\r",
+							"let author = pm.variables.replaceIn('{{$randomFullName}}')\r",
+							"\r",
+							"pm.collectionVariables.set(\"newBookName\",color + \" \" + month)\r",
+							"pm.collectionVariables.set(\"newISBN\",isbn)\r",
+							"pm.collectionVariables.set(\"newAisle\",aisle)\r",
+							"pm.collectionVariables.set(\"newAuthorName\",author)"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let myresponse = pm.response.json()\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"newGeneratedID\",myresponse.ID)\r",
+							"\r",
+							"pm.test(\"Check if the book is added\", function(){\r",
+							"pm.expect(myresponse.Msg).to.equal(\"successfully added\")\r",
+							"\r",
+							"pm.response.to.have.status(200)\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"{{newBookName}}\",\r\n  \"isbn\": \"{{newISBN}}\",\r\n  \"aisle\": \"{{newAisle}}\",\r\n  \"author\": \"{{newAuthorName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}Addbook.php",
+					"host": [
+						"{{baseURL}}Addbook",
+						"php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let myresponse = pm.response.json()\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check if the response body contains the corrrect book details\", function(){\r",
+							"pm.expect(myresponse).to.have.length(1)\r",
+							"\r",
+							"pm.response.to.have.status(200)\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}GetBook.php?ID={{newGeneratedID}}",
+					"host": [
+						"{{baseURL}}GetBook",
+						"php"
+					],
+					"query": [
+						{
+							"key": "ID",
+							"value": "{{newGeneratedID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let myresponse = pm.response.json()\r",
+							"\r",
+							"\r",
+							"pm.test(\"Check if the book isn deleted\", function(){\r",
+							"pm.expect(myresponse.msg).to.equal(\"book is successfully deleted\")\r",
+							"\r",
+							"pm.response.to.have.status(200)\r",
+							"\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"ID\" : \"{{newGeneratedID}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}DeleteBook.php",
+					"host": [
+						"{{baseURL}}DeleteBook",
+						"php"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newBookName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newISBN",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newAisle",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newAuthorName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "newGeneratedID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"value": ""
+		}
+	]
+}
